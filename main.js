@@ -1,43 +1,50 @@
 // ----- Start of the assigment ----- //
 
-const effectStartTime = 0;
-const effectDuration = 5000;
-const effectSubsidence = 2000;
+// Timing
+const EFFECT_START_TIME = 0;
+const EFFECT_DURATION = 5000;
+const EFFECT_SUBSIDENCE = 2000;
 
-const textureBaseName = "CoinsGold";
-const textureBaseNumber = "000";
-const nrTextures = 9;
+// Textures
+const TEXTURE_BASE_NAME = "CoinsGold";
+const TEXTURE_BASE_NUMBER = "000";
+const NR_TEXTURES = 9;
 
-const spawnParticlesAmountPerFrame = 2;
-const spawnPositionHorizontalSpan = 2.0;
-const spawnPositionHeight = 4.5;
-const spawnVelocityHorizontalSpan = 6.0;
-const spawnVelocityVerticalMin = 6.0;
-const spawnVelocityVerticalSpan = 6.0;
-const spawnAngularVelocitySpan = 18.0;
-const spawnSpinVelocityMagnitudeMin = 15.0;
-const spawnSpinVelocityMagnitudeSpan = 10.0;
+// Spawning
+const SPAWN_PARTICLES_AMOUNT_PER_FRAME = 2;
+const SPAWN_POSITION_HORIZONTAL_SPAN = 2.0;
+const SPAWN_POSITION_HEIGHT = 4.5;
+const SPAWN_VELOCITY_HORIZONTAL_SPAN = 6.0;
+const SPAWN_VELOCITY_VERTICAL_MIN = 6.0;
+const SPAWN_VELOCITY_VERTICAL_SPAN = 6.0;
+const SPAWN_ANGULAR_VELOCITY_SPAN = 18.0;
+const SPAWN_SPIN_VELOCITY_MAGNITUDE_MIN = 15.0;
+const SPAWN_SPIN_VELOCITY_MAGNITUDE_SPAN = 10.0;
 
-const gravity = 16.0;
-//const drag = 0.01;
+// Physics
+const GRAVITY = 16.0;
+//const DRAG = 0.01;
 
-const alphaIncrement = 0.2;
+// Visual effects
+const ALPHA_INCREMENT = 0.2;
 
-const cameraPositionY = -16.0;
-const projectionPlaneDistance = 8.0;
-const renderPositionScale = 100.0;
-const renderSizeScale = 0.4;
+// Projection and rendering
+const CAMERA_POSITION_Y = -16.0;
+const PROJECTION_PLANE_DISTANCE = 8.0;
+const RENDER_POSITION_SCALE = 100.0;
+const RENDER_SIZE_SCALE = 0.4;
 
 class ParticleSystem extends PIXI.Container {
 	constructor() {
 		super();
 
 		// Set start and duration for this effect in milliseconds
-		this.start = effectStartTime;
-		this.duration = effectDuration;
+		this.start = EFFECT_START_TIME;
+		this.duration = EFFECT_DURATION;
 
 		this.particles = new Array();
 		this.lastUpdateTime = 0;
+		//this.container = game.sprite();
 	}
 
 	animTick(nt, lt, gt) {
@@ -48,8 +55,8 @@ class ParticleSystem extends PIXI.Container {
 		//   gt: Global time in milliseconds,
 
 		// Spawn particles
-		if (lt < (effectDuration - effectSubsidence)) {
-			for (let i = 0; i < spawnParticlesAmountPerFrame; ++i) {
+		if (lt < (EFFECT_DURATION - EFFECT_SUBSIDENCE)) {
+			for (let i = 0; i < SPAWN_PARTICLES_AMOUNT_PER_FRAME; ++i) {
 				this.spawnParticle();
 			}
 		}
@@ -70,19 +77,19 @@ class ParticleSystem extends PIXI.Container {
 	}
 
 	spawnParticle() {
-		let positionX = spawnPositionHorizontalSpan * (1 - 2 * Math.random());
-		let positionY = spawnPositionHorizontalSpan * (1 - 2 * Math.random());
-		let positionZ = spawnPositionHeight;
-		let velocityX = spawnVelocityHorizontalSpan * (1 - 2 * Math.random());
-		let velocityY = spawnVelocityHorizontalSpan * (1 - 2 * Math.random());
-		let velocityZ = spawnVelocityVerticalMin + spawnVelocityVerticalSpan * Math.random();
-		let rotation = 2 * Math.PI * Math.random();
-		let angularVelocity = spawnAngularVelocitySpan * (1 - 2 * Math.random());
-		let spin = 0;
-		let spinVelocityMagnitude = spawnSpinVelocityMagnitudeMin + spawnSpinVelocityMagnitudeSpan * Math.random();
-		let spinVelocity = Math.random() > 0.5 ? spinVelocityMagnitude : -spinVelocityMagnitude;
+		const positionX = SPAWN_POSITION_HORIZONTAL_SPAN * (1 - 2 * Math.random());
+		const positionY = SPAWN_POSITION_HORIZONTAL_SPAN * (1 - 2 * Math.random());
+		const positionZ = SPAWN_POSITION_HEIGHT;
+		const velocityX = SPAWN_VELOCITY_HORIZONTAL_SPAN * (1 - 2 * Math.random());
+		const velocityY = SPAWN_VELOCITY_HORIZONTAL_SPAN * (1 - 2 * Math.random());
+		const velocityZ = SPAWN_VELOCITY_VERTICAL_MIN + SPAWN_VELOCITY_VERTICAL_SPAN * Math.random();
+		const rotation = 2 * Math.PI * Math.random();
+		const angularVelocity = SPAWN_ANGULAR_VELOCITY_SPAN * (1 - 2 * Math.random());
+		const spin = 0;
+		const spinVelocityMagnitude = SPAWN_SPIN_VELOCITY_MAGNITUDE_MIN + SPAWN_SPIN_VELOCITY_MAGNITUDE_SPAN * Math.random();
+		const spinVelocity = Math.random() > 0.5 ? spinVelocityMagnitude : -spinVelocityMagnitude;
 
-		let sprite = game.sprite(textureBaseName + textureBaseNumber);
+		let sprite = game.sprite(TEXTURE_BASE_NAME + TEXTURE_BASE_NUMBER);
 		sprite.pivot.x = 0.5 * sprite.width;
 		sprite.pivot.y = 0.5 * sprite.height;
 		sprite.alpha = 0;
@@ -123,7 +130,7 @@ class Particle {
 	}
 
 	update(deltaTime) {
-		this.velocityZ -= gravity * deltaTime;
+		this.velocityZ -= GRAVITY * deltaTime;
 		this.positionX += this.velocityX * deltaTime;
 		this.positionY += this.velocityY * deltaTime;
 		this.positionZ += this.velocityZ * deltaTime;
@@ -135,21 +142,21 @@ class Particle {
 		let sprite = this.sprite;
 
 		// Projection of position and scale
-		let projectionScaleFactor = projectionPlaneDistance / (this.positionY - cameraPositionY);
-		let projectionPointX = projectionScaleFactor * this.positionX;
-		let projectionPointZ = projectionScaleFactor * this.positionZ;
-		let screenCenterX = Math.floor(0.5 * renderer.width);
-		let screenCenterY = renderer.height;
-		sprite.x = screenCenterX + renderPositionScale * projectionPointX;
-		sprite.y = screenCenterY - renderPositionScale * projectionPointZ;
-		sprite.scale.x = sprite.scale.y = renderSizeScale * projectionScaleFactor;
+		const projectionScaleFactor = PROJECTION_PLANE_DISTANCE / (this.positionY - CAMERA_POSITION_Y);
+		const projectionPointX = projectionScaleFactor * this.positionX;
+		const projectionPointZ = projectionScaleFactor * this.positionZ;
+		const screenCenterX = Math.floor(0.5 * renderer.width);
+		const screenCenterY = renderer.height;
+		sprite.x = screenCenterX + RENDER_POSITION_SCALE * projectionPointX;
+		sprite.y = screenCenterY - RENDER_POSITION_SCALE * projectionPointZ;
+		sprite.scale.x = sprite.scale.y = RENDER_SIZE_SCALE * projectionScaleFactor;
 
 		// Rotation
 		sprite.rotation = this.rotation;
 
 		// Alpha
 		if (sprite.alpha < 1) {
-			sprite.alpha += alphaIncrement;
+			sprite.alpha += ALPHA_INCREMENT;
 
 			if (sprite.alpha >= 1) {
 				sprite.alpha = 1;
@@ -157,9 +164,9 @@ class Particle {
 		}
 
 		// Texture
-		let textureIndex = (Math.floor(this.spin) % nrTextures + nrTextures) % nrTextures;
-		let textureNumber = (textureBaseNumber + textureIndex).substr(-3);
-		game.setTexture(sprite, textureBaseName + textureNumber);
+		const textureIndex = (Math.floor(this.spin) % NR_TEXTURES + NR_TEXTURES) % NR_TEXTURES;
+		const textureNumber = (TEXTURE_BASE_NUMBER + textureIndex).substr(-3);
+		game.setTexture(sprite, TEXTURE_BASE_NAME + textureNumber);
 	}
 }
 
